@@ -35,6 +35,8 @@ class BayesianTrainer:
         self.batch_size = opts.batch_size
         self.test_batch_size = opts.test_batch_size
 
+        self.reweight = opts.kl_reweight
+
         self.device = opts.device
 
         self.writer = SummaryWriter(log_dir=self.summary_dir)
@@ -75,6 +77,9 @@ class BayesianTrainer:
             for batch_idx, (data, target) in enumerate(tqdm(self.train_loader)):
                 data, target = data.to(self.device), target.to(self.device)
                 self.net.zero_grad()
+                weight = 1/len(self.train_loader)
+                if self.reweight:
+                    weight = (2**(len(self.train_loader)-batch_idx-1))/(2**len(self.train_loader)-1)
                 loss, log_prior, log_variational_posterior, negative_log_likelihood = self.net.sample_elbo(data, target, 1/len(self.train_loader), self.samples)
                 avg_loss += loss
                 avg_lp += log_prior
