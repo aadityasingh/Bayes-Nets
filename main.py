@@ -23,7 +23,7 @@ def create_parser():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--mode', default='train', help="Mode to use. Currently supports 'train' and 'test'")
 
-	parser.add_argument('--device', dest='device', default='cpu', help="Device to use ('cuda' or 'cpu')")
+	parser.add_argument('--cuda', dest='cuda', type=bool, default=False, help="Whether or not cuda is available")
 
 	parser.add_argument('--run', default='run')
 	parser.add_argument('--base_path', default='/Bayes-Nets')
@@ -58,9 +58,9 @@ if __name__ == "__main__":
 	parser = create_parser()
 	opts = parser.parse_args()
 
-	opts.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+	opts.cuda = torch.cuda.is_available()
 	print("Is there a gpu???")
-	print(torch.cuda.is_available())
+	print(opts.cuda)
 
 	train_loader, val_loader, test_loader = load_data(opts)
 
@@ -71,9 +71,12 @@ if __name__ == "__main__":
 	assert (len(test_loader.dataset) % opts.test_batch_size) == 0
 
 	if opts.use_scale_prior:
-		net = models.BayesianNetwork(latent_dim=opts.latent_dim, prior=distributions.ScaleMixtureGaussian(opts.prior_pi, opts.prior_sigma1, opts.prior_sigma2)).to(opts.device)
+		net = models.BayesianNetwork(latent_dim=opts.latent_dim, prior=distributions.ScaleMixtureGaussian(opts.prior_pi, opts.prior_sigma1, opts.prior_sigma2))
 	else:
-		net = models.BayesianNetwork(latent_dim=opts.latent_dim, prior=distributions.Gaussian(0, opts.prior_sigma1)).to(opts.device)
+		net = models.BayesianNetwork(latent_dim=opts.latent_dim, prior=distributions.Gaussian(0, opts.prior_sigma1))
+
+	if opts.cuda:
+		net.cuda()
 
 	optimizer = optim.SGD(net.parameters(), lr=opts.lr) if opts.optimizer == 'sgd' else optim.Adam(net.parameters())
 

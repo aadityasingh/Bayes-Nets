@@ -19,8 +19,9 @@ class Gaussian(object):
         return torch.log1p(torch.exp(self.rho))
     
     def sample(self):
-        DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        epsilon = self.normal.sample(self.rho.size()).to(DEVICE)
+        epsilon = self.normal.sample(self.rho.size())
+        if torch.cuda.is_available():
+            epsilon = epsilon.cuda()
         return self.mu + self.sigma * epsilon
     
     def log_prob(self, input):

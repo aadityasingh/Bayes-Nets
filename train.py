@@ -37,7 +37,7 @@ class BayesianTrainer:
 
         self.reweight = opts.kl_reweight
 
-        self.device = opts.device
+        self.cuda = opts.cuda
 
         self.writer = SummaryWriter(log_dir=self.summary_dir)
 
@@ -75,7 +75,8 @@ class BayesianTrainer:
             avg_lvp = 0
             avg_nll = 0
             for batch_idx, (data, target) in enumerate(tqdm(self.train_loader)):
-                data, target = data.to(self.device), target.to(self.device)
+                if self.cuda:
+                    data, target = data.cuda(), target.cuda()
                 self.net.zero_grad()
                 weight = 1/len(self.train_loader)
                 if self.reweight:
@@ -131,8 +132,9 @@ class BayesianTrainer:
         corrects = np.zeros(self.test_samples+1, dtype=int)
         with torch.no_grad():
             for data, target in tqdm(self.test_loader):
-                data, target = data.to(self.device), target.to(self.device)
-                outputs = torch.zeros(self.test_samples+1, self.test_batch_size, 10).to(self.device)
+                outputs = torch.zeros(self.test_samples+1, self.test_batch_size, 10)
+                if self.cuda:
+                    data, target, outputs = data.cuda(), target.cuda(), outputs.cuda()
                 for i in range(self.test_samples):
                     outputs[i] = self.net(data, sample=True)
                 outputs[self.test_samples] = self.net(data, sample=False)

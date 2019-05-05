@@ -65,10 +65,11 @@ class BayesianNetwork(nn.Module):
         return self.l1.log_variational_posterior + self.l2.log_variational_posterior + self.l2.log_variational_posterior
     
     def sample_elbo(self, input, target, kl_weight, samples=2):
-        DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        outputs = torch.zeros(samples, input.shape[0], 10).to(DEVICE)
-        log_priors = torch.zeros(samples).to(DEVICE)
-        log_variational_posteriors = torch.zeros(samples).to(DEVICE)
+        outputs = torch.zeros(samples, input.shape[0], 10)
+        log_priors = torch.zeros(samples)
+        log_variational_posteriors = torch.zeros(samples)
+        if torch.cuda.is_available():
+            outputs, log_priors, lob_variational_posteriors = outputs.cuda(), log_priors.cuda(), lob_variational_posteriors.cuda()
         for i in range(samples):
             outputs[i] = self(input, sample=True)
             log_priors[i] = self.log_prior()
