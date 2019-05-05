@@ -69,7 +69,7 @@ class BayesianNetwork(nn.Module):
         log_priors = torch.zeros(samples)
         log_variational_posteriors = torch.zeros(samples)
         if torch.cuda.is_available():
-            outputs, log_priors, lob_variational_posteriors = outputs.cuda(), log_priors.cuda(), lob_variational_posteriors.cuda()
+            outputs, log_priors, log_variational_posteriors = outputs.cuda(), log_priors.cuda(), log_variational_posteriors.cuda()
         for i in range(samples):
             outputs[i] = self(input, sample=True)
             log_priors[i] = self.log_prior()
