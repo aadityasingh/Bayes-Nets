@@ -50,7 +50,7 @@ def load_data(opts):
 
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=opts.batch_size, sampler=train_sampler, **loader_kwargs)
 
-    valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=opts.batch_size, sampler=valid_sampler, **loader_kwargs)
+    valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=opts.test_batch_size, sampler=valid_sampler, **loader_kwargs)
 
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=opts.test_batch_size, shuffle=False, **loader_kwargs)
 
