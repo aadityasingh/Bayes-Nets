@@ -68,10 +68,10 @@ if __name__ == "__main__":
 	if opts.test_on == 'val':
 		print("testing on val set")
 		test_loader = val_loader
+		print(len(test_loader))
 
 	assert (len(train_loader.dataset) % opts.batch_size) == 0
 	assert (len(test_loader.dataset) % opts.test_batch_size) == 0
-	print(len(test_loader.dataset) / opts.test_batch_size)
 
 	if opts.use_scale_prior:
 		net = models.BayesianNetwork(latent_dim=opts.latent_dim, prior=distributions.ScaleMixtureGaussian(opts.prior_pi, opts.prior_sigma1, opts.prior_sigma2))
