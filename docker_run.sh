@@ -2,7 +2,7 @@
 
 # Set up mounts & pass environment and commandline through
 nvidia-docker run \
-    -v $HOME/Art-Generator-Final/dfcvaegan:/dfcvaegan \
+    -v $HOME/Bayes-Nets:/Bayes-Nets \
     -e CUDA_VISIBLE_DEVICES \
     aaditya \
     $*
