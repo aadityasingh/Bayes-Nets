@@ -1,0 +1,35 @@
+PI = 0.5
+SIGMA_1 = torch.FloatTensor([math.exp(-0)])
+SIGMA_2 = torch.FloatTensor([math.exp(-6)])
+
+def visualize_scale_mixture_components():
+    def show_lines():
+        pass
+    mix = ScaleMixtureGaussian(PI, SIGMA_1, SIGMA_2)
+    normal_1 = torch.distributions.Normal(0, SIGMA_1)
+    normal_2 = torch.distributions.Normal(0, SIGMA_2)
+    x_points = np.linspace(-5,5,10000)
+    d1 = np.array([torch.exp(normal_1.log_prob(float(c))) for c in x_points])
+    d2 = np.array([torch.exp(normal_2.log_prob(float(c))) for c in x_points])
+    d3 = np.array([torch.exp(mix.log_prob(float(c))) for c in x_points])
+    plt.subplots(1,3,figsize=(14,4))
+    plt.subplot(1,3,1)
+    plt.plot(x_points,d2,color="g")
+    plt.plot(x_points,d3,color="r")
+    plt.plot(x_points,d1,color="b")
+    plt.legend(["sigma2", "mix", "sigma1"])
+    plt.ylim(0,0.5)
+    plt.subplot(1,3,2)
+    plt.plot(x_points,d1,color="b")
+    plt.plot(x_points,d2,color="g")
+    plt.plot(x_points,d3,color="r")
+    plt.legend(["sigma1", "sigma2", "mix"])
+    plt.ylim(0,160)
+    plt.subplot(1,3,3)
+    plt.plot(x_points,d2,color="g")
+    plt.plot(x_points,d3,color="r")
+    plt.plot(x_points,d1,color="b")
+    plt.legend(["sigma2", "mix", "sigma1"])
+    plt.ylim(0,80)
+    
+visualize_scale_mixture_components()

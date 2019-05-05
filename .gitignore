@@ -1,0 +1,4 @@
+__pycache__/**
+runs/**
+mnist/**
+.DS_Store
