@@ -35,6 +35,8 @@ class BayesianTrainer:
         self.batch_size = opts.batch_size
         self.test_batch_size = opts.test_batch_size
 
+        self.test_size = opts.val_size if opts.test_on == 'val' else len(self.test_loader.dataset)
+
         self.reweight = opts.kl_reweight
 
         self.cuda = opts.cuda
@@ -145,10 +147,10 @@ class BayesianTrainer:
                 correct += pred.eq(target.view_as(pred)).sum().item()
         for index, num in enumerate(corrects):
             if index < self.test_samples:
-                print('Component {} Accuracy: {}/{}'.format(index, num, len(self.test_loader.dataset)))
+                print('Component {} Accuracy: {}/{}'.format(index, num, self.test_size))
             else:
-                print('Posterior Mean Accuracy: {}/{}'.format(num, len(self.test_loader.dataset)))
-        print('Ensemble Accuracy: {}/{}'.format(correct, len(self.test_loader.dataset)))
-        self.writer.add_scalar('test/error', 1-correct/len(self.test_loader.dataset), epoch)
+                print('Posterior Mean Accuracy: {}/{}'.format(num, self.test_size))
+        print('Ensemble Accuracy: {}/{}'.format(correct, self.test_size))
+        self.writer.add_scalar('test/error', 1-correct/self.test_size, epoch)
         self.net.train()
-        return 1-correct/len(self.test_loader.dataset)
+        return 1-correct/self.test_size
