@@ -26,7 +26,7 @@ def create_parser():
 	parser.add_argument('--device', dest='device', default='cpu', help="Device to use ('cuda' or 'cpu')")
 
 	parser.add_argument('--run', default='run')
-	parser.add_argument('--base_path', default='.')
+	parser.add_argument('--base_path', default='/Bayes-Nets')
 	parser.add_argument('--load_from_chkpt', default=None, help="Which checkpoint to load from")
 
 	parser.add_argument('--dataset', type=str, default='mnist', help="Choose between 'fmnist' and 'mnist'")
