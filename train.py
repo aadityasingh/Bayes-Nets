@@ -81,7 +81,7 @@ class BayesianTrainer:
                 weight = 1/len(self.train_loader)
                 if self.reweight:
                     weight = (2**(len(self.train_loader)-batch_idx-1))/(2**len(self.train_loader)-1)
-                loss, log_prior, log_variational_posterior, negative_log_likelihood = self.net.sample_elbo(data, target, 1/len(self.train_loader), self.samples)
+                loss, log_prior, log_variational_posterior, negative_log_likelihood = self.net.sample_elbo(data, target, weight, self.samples)
                 avg_loss += loss
                 avg_lp += log_prior
                 avg_lvp += log_variational_posterior

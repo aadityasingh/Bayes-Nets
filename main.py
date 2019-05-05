@@ -23,7 +23,7 @@ def create_parser():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--mode', default='train', help="Mode to use. Currently supports 'train' and 'test'")
 
-	parser.add_argument('--cuda', dest='cuda', type=bool, default=False, help="Whether or not cuda is available")
+	parser.add_argument('--cuda', dest='cuda', type=int, default=0, help="Whether or not cuda is available")
 
 	parser.add_argument('--run', default='run')
 	parser.add_argument('--base_path', default='/Bayes-Nets')
@@ -46,8 +46,8 @@ def create_parser():
 	parser.add_argument('--test_samples', dest='test_samples', type=int, default=10, help="How many samples to use for each test forward pass")
 	
 	parser.add_argument('--normalization', default='none', help="Type of normalization to use (for MNIST only), choose from 'none', 'weird' (dividing by 126, used in paper), 'normal' (canonical mnist normalization)")
-	parser.add_argument('--kl_reweight', type=bool, default=True, help="Whether or not to use the KL reweighting (section 3.4)")
-	parser.add_argument('--use_scale_prior', type=bool, default=True, help="Whether or not to use the Scale Mixture prior")
+	parser.add_argument('--kl_reweight', type=int, default=1, help="Whether or not to use the KL reweighting (section 3.4)")
+	parser.add_argument('--use_scale_prior', type=int, default=1, help="Whether or not to use the Scale Mixture prior")
 	parser.add_argument('--prior_pi', type=float, default=0.5, help="Weight parameter for Scale Mixture prior, must be between 0 and 1")
 	parser.add_argument('--prior_sigma1', type=float, default=1, help="Std. Dev. of gaussian prior or first component of Scale Mixture prior")
 	parser.add_argument('--prior_sigma2', type=float, default=math.exp(-6), help="Std. Dev. of second component of Scale Mixture prior")
@@ -58,9 +58,10 @@ if __name__ == "__main__":
 	parser = create_parser()
 	opts = parser.parse_args()
 
-	opts.cuda = torch.cuda.is_available()
+	opts.cuda = 1 if torch.cuda.is_available() else 0
 	print("Is there a gpu???")
 	print(opts.cuda)
+
 
 	train_loader, val_loader, test_loader = load_data(opts)
 
@@ -73,6 +74,7 @@ if __name__ == "__main__":
 	if opts.use_scale_prior:
 		net = models.BayesianNetwork(latent_dim=opts.latent_dim, prior=distributions.ScaleMixtureGaussian(opts.prior_pi, opts.prior_sigma1, opts.prior_sigma2))
 	else:
+		print("using gaussian")
 		net = models.BayesianNetwork(latent_dim=opts.latent_dim, prior=distributions.Gaussian(0, opts.prior_sigma1))
 
 	if opts.cuda:
