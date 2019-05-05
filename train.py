@@ -68,6 +68,7 @@ class BayesianTrainer:
 
     def train(self):
         self.net.train()
+        best_error = 1
         for epoch in range(self.num_epochs):
             if epoch == 0: # write initial distributions
                 self.write_weight_histograms(epoch)
@@ -97,15 +98,16 @@ class BayesianTrainer:
             self.write_loss_scalars(epoch, avg_loss, avg_lp, avg_lvp, avg_nll)
             self.write_weight_histograms(epoch+1)
             if epoch % self.test_every == 0 and epoch != 0:
-                self.test_ensemble(epoch)
+                new_error = self.test_ensemble(epoch)
+                if new_error < best_error:
             #if epoch % self.chkpt_every == 0:
-
-                print("saving checkpoint...")
-                torch.save({
-                        'epoch': epoch + 1,
-                        'state_dict': self.net.state_dict(),
-                        'optimizer': self.optimizer.state_dict(),
-                    }, '/'.join([self.checkpoint_dir, 'checkpoint.pth.tar']))
+                    best_error = new_error
+                    print("saving checkpoint...")
+                    torch.save({
+                            'epoch': epoch + 1,
+                            'state_dict': self.net.state_dict(),
+                            'optimizer': self.optimizer.state_dict(),
+                        }, '/'.join([self.checkpoint_dir, 'checkpoint_best.pth.tar']))
         print("saving checkpoint...")
         torch.save({
                 'epoch': epoch + 1,
