@@ -58,7 +58,7 @@ if __name__ == "__main__":
 	parser = create_parser()
 	opts = parser.parse_args()
 
-	opts.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+	opts.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 	print("Is there a gpu???")
 	print(torch.cuda.is_available())
 
