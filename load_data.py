@@ -22,9 +22,9 @@ def load_data(opts):
     if opts.normalization == 'none':
         normalization = transforms.ToTensor()
     elif opts.normalization == 'weird':
-        normalization = transforms.compose([transforms.ToTensor(), transforms.Normalize((0,), (126/255,))])
+        normalization = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0,), (126/255,))])
     elif opts.normalization == 'normal':
-        normalization = transforms.compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
+        normalization = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
     else:
         raise NotImplementedError
 
