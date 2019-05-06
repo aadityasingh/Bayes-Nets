@@ -27,7 +27,7 @@ class Gaussian(object):
     def log_prob(self, input):
         return (-math.log(math.sqrt(2 * math.pi))
                 - torch.log(self.sigma)
-                - ((input - self.mu) ** 2) / (2 * self.sigma ** 2)).sum()
+                - ((input - self.mu) ** 2) / (2 * self.sigma ** 2))
 
 
 class ScaleMixtureGaussian(object):
@@ -42,4 +42,4 @@ class ScaleMixtureGaussian(object):
     def log_prob(self, input):
         prob1 = torch.exp(self.gaussian1.log_prob(input))
         prob2 = torch.exp(self.gaussian2.log_prob(input))
-        return (torch.log(self.pi * prob1 + (1-self.pi) * prob2)).sum()
+        return (torch.log(self.pi * prob1 + (1-self.pi) * prob2))

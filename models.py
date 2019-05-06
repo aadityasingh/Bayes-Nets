@@ -36,8 +36,8 @@ class BayesianLinear(nn.Module):
             weight = self.weight.mu
             bias = self.bias.mu
         if self.training or calculate_log_probs:
-            self.log_prior = self.weight_prior.log_prob(weight) + self.bias_prior.log_prob(bias)
-            self.log_variational_posterior = self.weight.log_prob(weight) + self.bias.log_prob(bias)
+            self.log_prior = self.weight_prior.log_prob(weight).sum() + self.bias_prior.log_prob(bias).sum()
+            self.log_variational_posterior = self.weight.log_prob(weight).sum() + self.bias.log_prob(bias).sum()
         else:
             self.log_prior, self.log_variational_posterior = 0, 0
 

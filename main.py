@@ -77,7 +77,7 @@ if __name__ == "__main__":
 		net = models.BayesianNetwork(latent_dim=opts.latent_dim, prior=distributions.ScaleMixtureGaussian(opts.prior_pi, opts.prior_sigma1, opts.prior_sigma2))
 	else:
 		print("using gaussian")
-		net = models.BayesianNetwork(latent_dim=opts.latent_dim, prior=distributions.Gaussian(0, opts.prior_sigma1))
+		net = models.BayesianNetwork(latent_dim=opts.latent_dim, prior=torch.distributions.Normal(0,opts.prior_sigma1))
 
 	if opts.cuda:
 		net.cuda()
