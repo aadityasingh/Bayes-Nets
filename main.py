@@ -49,8 +49,8 @@ def create_parser():
 	parser.add_argument('--kl_reweight', type=int, default=1, help="Whether or not to use the KL reweighting (section 3.4)")
 	parser.add_argument('--use_scale_prior', type=int, default=1, help="Whether or not to use the Scale Mixture prior")
 	parser.add_argument('--prior_pi', type=float, default=0.5, help="Weight parameter for Scale Mixture prior, must be between 0 and 1")
-	parser.add_argument('--prior_sigma1', type=float, default=1, help="Std. Dev. of gaussian prior or first component of Scale Mixture prior")
-	parser.add_argument('--prior_sigma2', type=float, default=math.exp(-6), help="Std. Dev. of second component of Scale Mixture prior")
+	parser.add_argument('--prior_sigma1', type=float, default=0, help="Log Std. Dev. of gaussian prior or first component of Scale Mixture prior")
+	parser.add_argument('--prior_sigma2', type=float, default=-6, help="Log Std. Dev. of second component of Scale Mixture prior")
 
 	return parser
 
@@ -62,6 +62,8 @@ if __name__ == "__main__":
 	print("Is there a gpu???")
 	print(opts.cuda)
 
+	opts.prior_sigma1 = math.exp(opts.prior_sigma1)
+	opts.prior_sigma2 = math.exp(opts.prior_sigma2)
 
 	train_loader, val_loader, test_loader = load_data(opts)
 

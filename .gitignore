@@ -1,4 +1,5 @@
 __pycache__/**
+cloud_runs/**
 runs/**
 mnist/**
 .DS_Store
