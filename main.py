@@ -35,6 +35,7 @@ def create_parser():
 	parser.add_argument('--test_batch_size', dest='test_batch_size', type=int, default=5, help="Test batch size")
 	parser.add_argument('--val_size', type=int, default=10000, help="Size of val set")
 
+	parser.add_argument('--start_epoch', type=int, default=0, help="Start epoch")
 	parser.add_argument('--epochs', type=int, default=600, help="Number of training epochs")
 	parser.add_argument('--optimizer', type=str, default='sgd', help="Optimizer to use. Currently supports 'adam' and 'sgd' (default)")
 	parser.add_argument('--lr', type=float, default=1e-3, help="Learning rate, only used with SGD")

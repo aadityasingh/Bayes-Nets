@@ -25,6 +25,7 @@ class BayesianTrainer:
         utils.create_dir(self.summary_dir)
         utils.create_dir(self.checkpoint_dir)
 
+        self.start_epoch = opts.start_epoch
         self.num_epochs = opts.epochs
         self.lr = opts.lr
 
@@ -69,7 +70,7 @@ class BayesianTrainer:
     def train(self):
         self.net.train()
         best_error = 1
-        for epoch in range(self.num_epochs):
+        for epoch in range(self.start_epoch, self.start_epoch+self.num_epochs):
             if epoch == 0: # write initial distributions
                 self.write_weight_histograms(epoch)
                 self.test_ensemble(epoch)
@@ -113,21 +114,7 @@ class BayesianTrainer:
                 'epoch': epoch + 1,
                 'state_dict': self.net.state_dict(),
                 'optimizer': self.optimizer.state_dict(),
-            }, '/'.join([self.checkpoint_dir, 'checkpoint'+str(self.num_epochs)+'.pth.tar']))
-
-
-    def save_checkpoint(self, state, is_best=False, filename='checkpoint.pth.tar'):
-        '''
-        a function to save checkpoint of the training
-        :param state: {'epoch': cur_epoch + 1, 'state_dict': self.model.state_dict(),
-                            'optimizer': self.optimizer.state_dict()}
-        :param is_best: boolean to save the checkpoint aside if it has the best score so far
-        :param filename: the name of the saved file
-        '''
-        torch.save(state, '/'.join([self.checkpoint_dir,filename]))
-        # if is_best:
-        #     shutil.copyfile('/'.join([self.checkpoint_dir,filename]),
-        #                     '/'.join([self.checkpoint_dir,'model_best.pth.tar']))
+            }, '/'.join([self.checkpoint_dir, 'checkpoint'+str(self.start_epoch+self.num_epochs)+'.pth.tar']))
 
     def test_ensemble(self, epoch):
         self.net.eval()
