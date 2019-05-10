@@ -1,5 +1,5 @@
 # Bayes-Nets
-Some experimentation with Bayesian Neural Nets
+Some experimentation with Bayesian Neural Nets. A write-up of my results is the pdf file in the repo. To get the best understanding of the work, I would recommend reading both my report, and the original paper by Blundell et al. Since the report was capped to 4 pages (for the class), every detail/proof from the original paper is not present.
 
 ## Structure
 For training, please use main.py (and take a look at all the possible command line arguments for various hyperparameter experiments).
