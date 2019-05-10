@@ -1,3 +1,5 @@
+# This file is used for training models and encapsulates the necessary parameters
+
 import math
 import matplotlib.pyplot as plt
 import numpy as np
@@ -21,12 +23,10 @@ from load_data import load_data
 
 def create_parser():
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--mode', default='train', help="Mode to use. Currently supports 'train' and 'test'")
-
 	parser.add_argument('--cuda', dest='cuda', type=int, default=0, help="Whether or not cuda is available")
 
-	parser.add_argument('--run', default='run')
-	parser.add_argument('--base_path', default='/Bayes-Nets')
+	parser.add_argument('--run', default='600epochruns')
+	parser.add_argument('--base_path', default='.')
 	parser.add_argument('--load_from_chkpt', default=None, help="Which checkpoint to load from")
 
 	parser.add_argument('--dataset', type=str, default='mnist', help="Choose between 'fmnist' and 'mnist'")
@@ -94,8 +94,8 @@ if __name__ == "__main__":
 		print("Start epoch", opts.start_epoch)
 		optimizer.load_state_dict(checkpoint['optimizer'])
 
-	if opts.mode == 'train':
-		BayesianTrainer(net, optimizer, train_loader, test_loader, opts).train()
+
+	BayesianTrainer(net, optimizer, train_loader, test_loader, opts).train()
 
 	# weight_sample = np.zeros(shape=(0, ))
 	# weight_sample2 = np.zeros(shape=(0, ))

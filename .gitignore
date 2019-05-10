@@ -1,5 +1,6 @@
+*.txt
 __pycache__/**
 cloud_runs/**
-runs/**
+*runs*/**
 mnist/**
 .DS_Store

@@ -15,9 +15,16 @@ CUDA_VISIBLE_DEVICES=0 ./docker_run.sh python3 /Bayes-Nets/main.py --run kl_scm_
 sleep 25000; CUDA_VISIBLE_DEVICES=0 ./docker_run.sh python3 /Bayes-Nets/main.py --run kl_gm_0_lr1e-3_ld400 --test_on val --use_scale_prior 0 --kl_reweight 1; CUDA_VISIBLE_DEVICES=0 ./docker_run.sh python3 /Bayes-Nets/main.py --run kl_scm_05_0_6_lr1e-3_ld400_weirdnorm --test_on val --lr 0.0001 --kl_reweight 1 --normalization weird;CUDA_VISIBLE_DEVICES=0 ./docker_run.sh python3 /Bayes-Nets/main.py --run kl_scm_05_0_6_lr1e-3_ld400_normalnorm --test_on val --lr 0.0001 --kl_reweight 1 --normalization normal;
 
 
-LD 400 was 23 sec per epoch and ___ for test
+LD 400 was 23 sec per epoch and 2:23 for test
 LD 1200 was 47 sec per epoch and 9:39 for tets
 
 
 CUDA_VISIBLE_DEVICES=0 ./docker_run.sh python3 /Bayes-Nets/main.py --run kl_scm_05_0_8_lr1e-3_ld400 --test_on val --kl_reweight 1 --prior_sigma2 -8
 CUDA_VISIBLE_DEVICES=1 ./docker_run.sh python3 /Bayes-Nets/main.py --run kl_scm_025_0_6_lr1e-3_ld400 --test_on val --kl_reweight 1 --prior_pi 0.25
+
+CUDA_VISIBLE_DEVICES=0 ./docker_run.sh python3 /Bayes-Nets/main.py --run kl_scm_05_0_6_lr1e-4_ld400_weirdnorm --test_on val --lr 0.0001 --kl_reweight 1 --normalization weird --start_epoch 600 --load_from_chkpt checkpoint600.pth.tar
+CUDA_VISIBLE_DEVICES=1 ./docker_run.sh python3 /Bayes-Nets/main.py --run kl_scm_05_0_6_lr1e-4_ld400_normalnorm --test_on val --lr 0.0001 --kl_reweight 1 --normalization normal --start_epoch 600 --load_from_chkpt checkpoint600.pth.tar
+
+CUDA_VISIBLE_DEVICES=0 ./docker_run.sh python3 /Bayes-Nets/main.py --run kl_scm_05_06_lr1e-3_ld1200_weirdnorm --test_on val --kl_reweight 1 --start_epoch 600 --load_from_chkpt checkpoint600.pth.tar --normalization weird
+CUDA_VISIBLE_DEVICES=1 ./docker_run.sh python3 /Bayes-Nets/main.py --run kl_scm_05_0_6_lr1e-4_ld400 --test_on val --lr 0.0001 --kl_reweight 1 --start_epoch 600 --load_from_chkpt checkpoint600.pth.tar
+

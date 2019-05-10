@@ -23,7 +23,19 @@ class Gaussian(object):
         if torch.cuda.is_available():
             epsilon = epsilon.cuda()
         return self.mu + self.sigma * epsilon
+
+    def pruned_sample(self, noise_threshold):
+        epsilon = self.normal.sample(self.rho.size())
+        if torch.cuda.is_available():
+            epsilon = epsilon.cuda()
+        return torch.where(torch.abs(self.mu)/self.sigma <= noise_threshold, torch.zeros(self.mu.shape), self.mu + self.sigma * epsilon)
     
+    def naive_pruned_sample(self, weight_threshold):
+        epsilon = self.normal.sample(self.rho.size())
+        if torch.cuda.is_available():
+            epsilon = epsilon.cuda()
+        return torch.where(torch.abs(self.mu) <= weight_threshold, torch.zeros(self.mu.shape), self.mu + self.sigma * epsilon)
+
     def log_prob(self, input):
         return (-math.log(math.sqrt(2 * math.pi))
                 - torch.log(self.sigma)

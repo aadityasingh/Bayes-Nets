@@ -60,11 +60,11 @@ class BayesianTrainer:
 
         self.writer.add_histogram('histogram/weights', torch.cat((self.net.l1.weight.sample().flatten(), self.net.l2.weight.sample().flatten(), self.net.l3.weight.sample().flatten()), 0), epoch)
 
-    def write_loss_scalars(self, epoch, loss, log_prior, log_variational_posterior, negative_log_likelihood):
+    def write_loss_scalars(self, epoch, loss, log_prior, log_vp, negative_log_likelihood):
         self.writer.add_scalar('training/loss', loss, epoch)
-        self.writer.add_scalar('training/complexity_cost', log_variational_posterior-log_prior, epoch)
+        self.writer.add_scalar('training/complexity_cost', log_vp-log_prior, epoch)
         self.writer.add_scalar('training/log_prior', log_prior, epoch)
-        self.writer.add_scalar('training/log_variational_posterior', log_variational_posterior, epoch)
+        self.writer.add_scalar('training/log_vp', log_vp, epoch)
         self.writer.add_scalar('training/negative_log_likelihood', negative_log_likelihood, epoch)
 
     def train(self):
@@ -85,10 +85,10 @@ class BayesianTrainer:
                 weight = 1/len(self.train_loader)
                 if self.reweight:
                     weight = (2**(len(self.train_loader)-batch_idx-1))/(2**len(self.train_loader)-1)
-                loss, log_prior, log_variational_posterior, negative_log_likelihood = self.net.sample_elbo(data, target, weight, self.samples)
+                loss, log_prior, log_vp, negative_log_likelihood = self.net.sample_elbo(data, target, weight, self.samples)
                 avg_loss += loss
                 avg_lp += log_prior
-                avg_lvp += log_variational_posterior
+                avg_lvp += log_vp
                 avg_nll += negative_log_likelihood
                 loss.backward()
                 self.optimizer.step()
@@ -134,9 +134,9 @@ class BayesianTrainer:
                 pred = output.max(1, keepdim=True)[1] # index of max log-probability
                 corrects += preds.eq(target.view_as(pred)).sum(dim=1).squeeze().cpu().numpy()
                 correct += pred.eq(target.view_as(pred)).sum().item()
-        for index, num in enumerate(corrects):
-            if index < self.test_samples:
-                print('Component {} Accuracy: {}/{}'.format(index, num, self.test_size))
+        for i, num in enumerate(corrects):
+            if i < self.test_samples:
+                print('Component {} Accuracy: {}/{}'.format(i, num, self.test_size))
             else:
                 print('Posterior Mean Accuracy: {}/{}'.format(num, self.test_size))
         print('Ensemble Accuracy: {}/{}'.format(correct, self.test_size))
